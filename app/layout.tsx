@@ -9,16 +9,12 @@ export const metadata: Metadata = {
   title: 'YC BLR \'26 — Founder Directory',
   description: 'Networking directory for YC Startup School Bangalore, April 18, 2026',
   manifest: '/manifest.json',
-  icons: {
-    icon: '/favicon.png',
-    apple: '/logo.png',
-  },
   openGraph: {
     title: "YC BLR '26 — Founder Directory",
     description: "Meet 200+ founders at YC Startup School Bangalore. Browse products, find co-founders, and track connections.",
     url: 'https://ycblr.xyz',
     siteName: 'YC BLR Directory',
-    images: [{ url: '/og-image.png' }],
+    images: [{ url: 'https://ycblr.xyz/og-image.png' }],
     locale: 'en_US',
     type: 'website',
   },
@@ -27,7 +23,7 @@ export const metadata: Metadata = {
     title: "YC BLR '26 — Founder Directory",
     description: "Meet 200+ founders at YC Startup School Bangalore.",
     creator: '@kiaan_mittal',
-    images: ['/og-image.png'],
+    images: ['https://ycblr.xyz/og-image.png'],
   },
   appleWebApp: { capable: true, statusBarStyle: 'default', title: 'YC BLR \'26' },
 }

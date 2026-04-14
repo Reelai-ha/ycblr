@@ -153,15 +153,6 @@ export default function Home() {
 
         {/* Hero */}
         <div className="pt-20 pb-16">
-          <div className="flex items-center gap-4 mb-8">
-            <img src="/logo.png" alt="Logo" className="w-16 h-16 sm:w-20 sm:h-20 shadow-xl shadow-orange-100 rounded-2xl" />
-            <div className="h-10 w-[2px] bg-zinc-100 rounded-full sm:block hidden" />
-            <div className="sm:block hidden">
-              <p className="text-zinc-400 text-[10px] uppercase tracking-widest font-bold">Official Directory</p>
-              <p className="text-zinc-900 font-black text-sm">YC BLR &apos;26</p>
-            </div>
-          </div>
-
           <div className="inline-flex items-center gap-2 bg-orange-100 border border-orange-200 text-orange-600 text-xs px-3 py-1.5 rounded-full mb-6 font-medium">
             <span className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-pulse" />
             April 18, 2026 · Bangalore
