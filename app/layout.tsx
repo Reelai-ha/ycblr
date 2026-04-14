@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import { ClerkProvider } from '@clerk/nextjs'
 import { Suspense } from 'react'
+import { Analytics } from '@vercel/analytics/next'
 import NavBar from './components/NavBar'
 import TwitterCTA from './components/TwitterCTA'
 import DataFastInit from './components/DataFastInit'
@@ -38,6 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <ClerkProvider>
       <html lang="en">
         <body className="min-h-screen flex flex-col bg-white text-zinc-900">
+          <Analytics />
           <DataFastInit />
           <NavBar />
           <main className="flex-1">{children}</main>
