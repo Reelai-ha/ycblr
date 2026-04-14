@@ -3,7 +3,6 @@ import './globals.css'
 import { ClerkProvider } from '@clerk/nextjs'
 import NavBar from './components/NavBar'
 import TwitterCTA from './components/TwitterCTA'
-import Ticker from './components/Ticker'
 
 export const metadata: Metadata = {
   title: 'YC BLR \'26 — Founder Directory',
@@ -37,7 +36,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <ClerkProvider>
       <html lang="en">
         <body className="min-h-screen flex flex-col bg-white text-zinc-900">
-          <Ticker />
           <NavBar />
           <main className="flex-1">{children}</main>
           <TwitterCTA />

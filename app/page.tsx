@@ -5,8 +5,11 @@ import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import { X, ExternalLink } from 'lucide-react'
 
-interface Founder { id: string; name: string; company: string; tagline: string; description: string; website: string; twitter: string; category: string }
-interface Showcase { id: string; product_name: string; tagline: string; description: string; category: string; upvotes: number; website: string; logo_url: string }
+interface Founder { id: string; name: string; company: string; tagline: string; description: string; website: string; twitter: string; category: string; featured: boolean }
+interface Showcase { id: string; product_name: string; tagline: string; description: string; category: string; upvotes: number; website: string; logo_url: string; featured: boolean }
+
+const FEATURED_FOUNDER_URL = 'https://checkout.dodopayments.com/buy/pdt_0Nch2cGLwwjUu9scUmAgt?quantity=1&redirect_url=https://ycblr.xyz'
+const SPONSOR_URL = 'https://checkout.dodopayments.com/buy/pdt_0NccTGJYYzUyEwo28HPtw?quantity=1'
 
 const CATEGORY_COLORS: Record<string, string> = {
   'AI/ML': 'bg-purple-50 text-purple-600 border-purple-200',
@@ -118,6 +121,8 @@ function ShowcaseModal({ item, onClose }: { item: Showcase; onClose: () => void 
 export default function Home() {
   const [founders, setFounders] = useState<Founder[]>([])
   const [showcase, setShowcase] = useState<Showcase[]>([])
+  const [featuredFounders, setFeaturedFounders] = useState<Founder[]>([])
+  const [featuredProducts, setFeaturedProducts] = useState<Showcase[]>([])
   const [selectedFounder, setSelectedFounder] = useState<Founder | null>(null)
   const [selectedShowcase, setSelectedShowcase] = useState<Showcase | null>(null)
   const [loading, setLoading] = useState(true)
@@ -125,9 +130,11 @@ export default function Home() {
   useEffect(() => {
     async function load() {
       try {
-        const [{ data: f, error: fe }, { data: s, error: se }] = await Promise.all([
-          supabase.from('founders').select('*').order('created_at', { ascending: false }).limit(3),
-          supabase.from('showcases').select('*').order('upvotes', { ascending: false }).limit(3),
+        const [{ data: f, error: fe }, { data: s, error: se }, { data: ff }, { data: fp }] = await Promise.all([
+          supabase.from('founders').select('*').order('created_at', { ascending: false }).limit(6),
+          supabase.from('showcases').select('*').order('upvotes', { ascending: false }).limit(6),
+          supabase.from('founders').select('*').eq('featured', true).order('created_at', { ascending: false }),
+          supabase.from('showcases').select('*').eq('featured', true).order('created_at', { ascending: false }),
         ])
 
         if (fe) console.error('Error fetching founders:', fe)
@@ -135,6 +142,8 @@ export default function Home() {
 
         setFounders(f || [])
         setShowcase(s || [])
+        setFeaturedFounders(ff || [])
+        setFeaturedProducts(fp || [])
       } catch (err) {
         console.error('Failed to load home data:', err)
       } finally {
@@ -152,26 +161,26 @@ export default function Home() {
       <div className="max-w-6xl mx-auto px-4">
 
         {/* Hero */}
-        <div className="pt-20 pb-16">
-          <div className="inline-flex items-center gap-2 bg-orange-100 border border-orange-200 text-orange-600 text-xs px-3 py-1.5 rounded-full mb-6 font-medium">
+        <div className="pt-8 sm:pt-20 pb-12 sm:pb-16">
+          <div className="inline-flex items-center gap-2 bg-orange-100 border border-orange-200 text-orange-600 text-xs px-3 py-1.5 rounded-full mb-4 sm:mb-6 font-medium">
             <span className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-pulse" />
             April 18, 2026 · Bangalore
           </div>
 
           <div className="max-w-3xl">
-            <h1 className="text-5xl sm:text-7xl font-black text-zinc-900 leading-[1.05] tracking-tight mb-5">
+            <h1 className="text-3xl sm:text-5xl lg:text-7xl font-black text-zinc-900 leading-[1.05] tracking-tight mb-3 sm:mb-5">
               Meet every founder<br />
               at <span className="text-orange-500">YC Startup School</span><br />
               Bangalore.
             </h1>
-            <p className="text-zinc-500 text-base sm:text-lg max-w-xl mb-8 leading-relaxed">
+            <p className="text-zinc-500 text-sm sm:text-base lg:text-lg max-w-xl mb-6 sm:mb-8 leading-relaxed">
               200+ founders. One room. Don&apos;t leave without knowing who&apos;s there — browse profiles, track who you met, and showcase what you&apos;re building.
             </p>
-            <div className="flex flex-wrap gap-3">
-              <Link href="/sign-up" className="bg-orange-500 hover:bg-orange-400 text-white font-semibold px-7 py-3 rounded-xl transition-colors text-sm shadow-lg shadow-orange-200">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3">
+              <Link href="/sign-up" className="bg-orange-500 hover:bg-orange-400 text-white font-semibold px-6 sm:px-7 py-3 rounded-xl transition-colors text-sm shadow-lg shadow-orange-200 text-center sm:text-left">
                 Add your profile →
               </Link>
-              <Link href="/founders" className="bg-white hover:bg-zinc-50 border border-zinc-200 text-zinc-700 font-semibold px-7 py-3 rounded-xl transition-colors text-sm shadow-sm">
+              <Link href="/founders" className="bg-white hover:bg-zinc-50 border border-zinc-200 text-zinc-700 font-semibold px-6 sm:px-7 py-3 rounded-xl transition-colors text-sm shadow-sm text-center">
                 Browse founders
               </Link>
             </div>
@@ -179,9 +188,9 @@ export default function Home() {
         </div>
 
         {/* How it works */}
-        <div className="mb-20 border-t border-zinc-100 pt-16">
-          <p className="text-zinc-400 text-xs uppercase tracking-widest font-semibold mb-10">How it works</p>
-          <div className="grid sm:grid-cols-3 gap-8">
+        <div className="mb-16 sm:mb-20 border-t border-zinc-100 pt-10 sm:pt-16">
+          <p className="text-zinc-400 text-xs uppercase tracking-widest font-semibold mb-6 sm:mb-10">How it works</p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
             {[
               { step: '01', title: 'Create your profile', desc: 'Sign up and add your name, company, what you\'re building, and how to reach you. Takes 2 minutes.' },
               { step: '02', title: 'Find people to talk to', desc: 'Browse the directory before or at the event. Filter by category, search by name or product.' },
@@ -198,22 +207,100 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Featured Founders */}
+        {featuredFounders.length > 0 && (
+          <section className="mb-16 sm:mb-20">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <span className="bg-orange-500 text-white text-[10px] font-black px-2 py-1 rounded-md uppercase tracking-tight">Featured</span>
+                <h2 className="text-lg sm:text-2xl font-black text-zinc-900">Featured Founders</h2>
+              </div>
+              <a href={FEATURED_FOUNDER_URL} target="_blank" rel="noopener noreferrer"
+                className="text-xs text-orange-500 hover:text-orange-400 font-semibold transition-colors border border-orange-200 px-3 py-1.5 rounded-full w-fit">
+                Get featured →
+              </a>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+              {featuredFounders.map(f => (
+                <button key={f.id} onClick={() => setSelectedFounder(f)}
+                  className="text-left group bg-gradient-to-br from-orange-50 to-amber-50/40 hover:from-orange-100 hover:to-amber-100/60 border-2 border-orange-200 hover:border-orange-400 rounded-2xl p-6 transition-all shadow-sm hover:shadow-lg cursor-pointer relative overflow-hidden">
+                  <div className="absolute top-3 right-3 bg-orange-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded uppercase tracking-tight">⭐ Featured</div>
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-400 to-orange-600 text-white font-black text-lg flex items-center justify-center shrink-0 shadow-md shadow-orange-200">
+                      {getInitials(f.name)}
+                    </div>
+                    <div className="min-w-0">
+                      <div className="font-black text-zinc-900 text-base truncate">{f.name}</div>
+                      <div className="text-zinc-500 text-sm truncate">{f.company}</div>
+                    </div>
+                  </div>
+                  {f.category && (
+                    <span className={`text-xs px-2.5 py-1 rounded-full border w-fit block mb-3 font-medium ${CATEGORY_COLORS[f.category] || CATEGORY_COLORS['Other']}`}>
+                      {f.category}
+                    </span>
+                  )}
+                  {f.tagline && <p className="text-zinc-500 text-sm leading-relaxed">{f.tagline}</p>}
+                </button>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Featured Products */}
+        {featuredProducts.length > 0 && (
+          <section className="mb-16 sm:mb-20">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <span className="bg-orange-500 text-white text-[10px] font-black px-2 py-1 rounded-md uppercase tracking-tight">Featured</span>
+                <h2 className="text-lg sm:text-2xl font-black text-zinc-900">Featured Products</h2>
+              </div>
+              <a href={FEATURED_FOUNDER_URL} target="_blank" rel="noopener noreferrer"
+                className="text-xs text-orange-500 hover:text-orange-400 font-semibold transition-colors border border-orange-200 px-3 py-1.5 rounded-full w-fit">
+                Get featured →
+              </a>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+              {featuredProducts.map(item => (
+                <button key={item.id} onClick={() => setSelectedShowcase(item)}
+                  className="text-left group bg-gradient-to-br from-orange-50 to-amber-50/40 hover:from-orange-100 hover:to-amber-100/60 border-2 border-orange-200 hover:border-orange-400 rounded-2xl overflow-hidden transition-all shadow-sm hover:shadow-lg cursor-pointer">
+                  <div className="h-1.5 bg-gradient-to-r from-orange-400 to-amber-400 w-full" />
+                  <div className="p-6 relative">
+                    <div className="absolute top-3 right-3 bg-orange-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded uppercase tracking-tight">⭐ Featured</div>
+                    <div className="flex items-start justify-between gap-3 mb-3 pr-16">
+                      <h3 className="font-black text-zinc-900 text-lg leading-tight">{item.product_name}</h3>
+                      <div className="flex items-center gap-1 bg-orange-50 border border-orange-100 text-orange-500 text-xs font-bold px-2 py-1 rounded-lg shrink-0">
+                        ▲ {item.upvotes}
+                      </div>
+                    </div>
+                    {item.category && (
+                      <span className={`text-xs px-2.5 py-1 rounded-full border w-fit block mb-3 font-medium ${CATEGORY_COLORS[item.category] || CATEGORY_COLORS['Other']}`}>
+                        {item.category}
+                      </span>
+                    )}
+                    <p className="text-zinc-500 text-sm leading-relaxed">{item.tagline}</p>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* Latest Founders */}
-        <section className="mb-20">
-          <div className="flex items-center justify-between mb-8">
+        <section className="mb-16 sm:mb-20">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-6 sm:mb-8">
             <div>
-              <h2 className="text-2xl font-black text-zinc-900">Latest Founders</h2>
+              <h2 className="text-lg sm:text-2xl font-black text-zinc-900">Latest Founders</h2>
               <p className="text-zinc-400 text-sm mt-1">Recently joined the directory</p>
             </div>
-            <Link href="/founders" className="text-sm text-orange-500 hover:text-orange-400 transition-colors font-semibold">View all →</Link>
+            <Link href="/founders" className="text-sm text-orange-500 hover:text-orange-400 transition-colors font-semibold w-fit">View all →</Link>
           </div>
 
           {loading ? (
-            <div className="grid sm:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
               {[1, 2, 3].map(i => <div key={i} className="bg-zinc-100 rounded-2xl h-40 animate-pulse" />)}
             </div>
           ) : founders.length === 0 ? (
-            <div className="border border-dashed border-zinc-200 rounded-2xl py-16 text-center">
+            <div className="border border-dashed border-zinc-200 rounded-2xl py-12 sm:py-16 text-center">
               <div className="text-4xl mb-3">👋</div>
               <p className="text-zinc-500 font-semibold mb-1">No founders yet</p>
               <p className="text-zinc-400 text-sm mb-5">Be the first to add your profile to the directory.</p>
@@ -222,7 +309,7 @@ export default function Home() {
               </Link>
             </div>
           ) : (
-            <div className="grid sm:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
               {founders.map(f => (
                 <button key={f.id} onClick={() => setSelectedFounder(f)}
                   className="text-left group bg-white hover:bg-orange-50/60 border border-zinc-200 hover:border-orange-300 rounded-2xl p-6 transition-all shadow-sm hover:shadow-lg cursor-pointer">
@@ -251,21 +338,21 @@ export default function Home() {
         </section>
 
         {/* Latest Products */}
-        <section className="mb-20">
-          <div className="flex items-center justify-between mb-8">
+        <section className="mb-16 sm:mb-20">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-6 sm:mb-8">
             <div>
-              <h2 className="text-2xl font-black text-zinc-900">Latest Products</h2>
+              <h2 className="text-lg sm:text-2xl font-black text-zinc-900">Latest Products</h2>
               <p className="text-zinc-400 text-sm mt-1">What founders are building</p>
             </div>
-            <Link href="/showcase" className="text-sm text-orange-500 hover:text-orange-400 transition-colors font-semibold">View all →</Link>
+            <Link href="/showcase" className="text-sm text-orange-500 hover:text-orange-400 transition-colors font-semibold w-fit">View all →</Link>
           </div>
 
           {loading ? (
-            <div className="grid sm:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
               {[1, 2, 3].map(i => <div key={i} className="bg-zinc-100 rounded-2xl h-52 animate-pulse" />)}
             </div>
           ) : showcase.length === 0 ? (
-            <div className="border border-dashed border-zinc-200 rounded-2xl py-16 text-center">
+            <div className="border border-dashed border-zinc-200 rounded-2xl py-12 sm:py-16 text-center">
               <div className="text-4xl mb-3">🚀</div>
               <p className="text-zinc-500 font-semibold mb-1">No products yet</p>
               <p className="text-zinc-400 text-sm mb-5">Be the first to showcase your product to the community.</p>
@@ -274,7 +361,7 @@ export default function Home() {
               </Link>
             </div>
           ) : (
-            <div className="grid sm:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
               {showcase.map(item => (
                 <button key={item.id} onClick={() => setSelectedShowcase(item)}
                   className="text-left group bg-white hover:bg-orange-50/60 border border-zinc-200 hover:border-orange-300 rounded-2xl overflow-hidden transition-all shadow-sm hover:shadow-lg cursor-pointer">
@@ -316,9 +403,14 @@ export default function Home() {
                 <p className="text-zinc-400 text-sm sm:text-base leading-relaxed mb-6">
                   Get your brand in front of 200+ elite founders building the future. Sponsor the directory, showcased products, or the coffee zone.
                 </p>
-                <a href="https://twitter.com/kiaan_mittal" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-white hover:bg-zinc-100 text-zinc-900 font-bold px-7 py-3 rounded-xl transition-all shadow-xl">
-                  Become a Sponsor →
-                </a>
+                <div className="flex flex-wrap gap-3">
+                  <a href={SPONSOR_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-white hover:bg-zinc-100 text-zinc-900 font-bold px-7 py-3 rounded-xl transition-all shadow-xl">
+                    Become a Sponsor →
+                  </a>
+                  <a href={FEATURED_FOUNDER_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-400 text-white font-bold px-7 py-3 rounded-xl transition-all shadow-xl">
+                    ⭐ Get Featured
+                  </a>
+                </div>
               </div>
 
               <div className="w-full max-w-sm bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
@@ -351,8 +443,8 @@ export default function Home() {
         </section>
 
         {/* Feature cards */}
-        <section className="mb-20">
-          <div className="grid sm:grid-cols-3 gap-5">
+        <section className="mb-16 sm:mb-20">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
             {[
               { icon: '🔍', title: 'Find Founders', desc: 'Browse every founder attending. Filter by what they build, search by name — find your next co-founder or customer.', href: '/founders', cta: 'Browse directory' },
               { icon: '🚀', title: 'Showcase Your Product', desc: 'Get your product seen by 200+ founders in one shot. Add it to the showcase and collect upvotes.', href: '/showcase', cta: 'Add product' },
@@ -374,8 +466,8 @@ export default function Home() {
         </section>
 
         {/* Twitter banner */}
-        <div className="mb-20 rounded-2xl border border-orange-200 bg-gradient-to-r from-orange-50 to-amber-50 overflow-hidden">
-          <div className="px-8 py-10 flex flex-col sm:flex-row items-center gap-6 justify-between">
+        <div className="mb-12 rounded-2xl border border-orange-200 bg-gradient-to-r from-orange-50 to-amber-50 overflow-hidden">
+          <div className="px-6 sm:px-8 py-8 sm:py-10 flex flex-col sm:flex-row items-center gap-4 sm:gap-6 justify-between">
             <div>
               <p className="text-orange-400 text-sm mb-1 font-medium">Built by</p>
               <h3 className="text-2xl font-black text-zinc-900 mb-1">@kiaan_mittal</h3>

@@ -87,8 +87,13 @@ export default function MapPage() {
   const [form, setForm] = useState({ title: '', time_slot: '3:00 PM', attendee_count: 1 })
 
   async function load() {
-    const { data } = await supabase.from('event_pins').select('*').order('created_at', { ascending: false })
-    setPins(data || [])
+    try {
+      const { data, error } = await supabase.from('event_pins').select('*').order('created_at', { ascending: false })
+      if (error) throw error
+      setPins(data || [])
+    } catch {
+      setPins([])
+    }
   }
 
   useEffect(() => { load() }, [])
@@ -105,12 +110,17 @@ export default function MapPage() {
     e.preventDefault()
     if (!user || !selectedZone) return
     setSaving(true)
-    await supabase.from('event_pins').insert({
-      clerk_user_id: user.id,
-      name: founderName || 'Anonymous',
-      location_key: selectedZone,
-      ...form,
-    })
+    try {
+      const { error } = await supabase.from('event_pins').insert({
+        clerk_user_id: user.id,
+        name: founderName || 'Anonymous',
+        location_key: selectedZone,
+        ...form,
+      })
+      if (error) throw error
+    } catch {
+      // table may not exist yet — silently fail
+    }
     setForm({ title: '', time_slot: '3:00 PM', attendee_count: 1 })
     setShowPinForm(false)
     setSelectedZone(null)

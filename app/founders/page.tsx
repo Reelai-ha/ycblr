@@ -115,21 +115,27 @@ export default function FoundersPage() {
   )
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-12">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+    <div className="max-w-6xl mx-auto px-4 py-6 sm:py-12">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-6 sm:mb-8">
         <div>
-          <h1 className="text-3xl font-black text-zinc-900">Founders</h1>
-          <p className="text-zinc-400 text-sm mt-1">Attending YC Startup School Bangalore · April 18, 2026</p>
+          <h1 className="text-2xl sm:text-3xl font-black text-zinc-900">Founders</h1>
+          <p className="text-zinc-400 text-xs sm:text-sm mt-1">Attending YC Startup School Bangalore · April 18, 2026</p>
         </div>
-        {isSignedIn ? (
-          <Link href="/onboarding" className="bg-orange-500 hover:bg-orange-400 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-colors self-start shadow-lg shadow-orange-100">
-            + Add Your Profile
-          </Link>
-        ) : (
-          <Link href="/sign-up" className="bg-orange-500 hover:bg-orange-400 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-colors self-start shadow-lg shadow-orange-100">
-            + Join Directory
-          </Link>
-        )}
+        <div className="flex items-center gap-3 self-start flex-wrap">
+          <a href="https://checkout.dodopayments.com/buy/pdt_0Nch2cGLwwjUu9scUmAgt?quantity=1&redirect_url=https://ycblr.xyz" target="_blank" rel="noopener noreferrer"
+            className="flex items-center gap-1.5 border border-orange-300 text-orange-600 hover:bg-orange-50 font-semibold px-4 py-2.5 rounded-xl text-sm transition-colors">
+            ⭐ Get Featured
+          </a>
+          {isSignedIn ? (
+            <Link href="/onboarding" className="bg-orange-500 hover:bg-orange-400 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-colors shadow-lg shadow-orange-100">
+              + Add Your Profile
+            </Link>
+          ) : (
+            <Link href="/sign-up" className="bg-orange-500 hover:bg-orange-400 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-colors shadow-lg shadow-orange-100">
+              + Join Directory
+            </Link>
+          )}
+        </div>
       </div>
 
       <input

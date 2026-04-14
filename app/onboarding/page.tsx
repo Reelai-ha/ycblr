@@ -31,8 +31,13 @@ export default function OnboardingPage() {
     if (!user) return
     setLoading(true)
     setError('')
+
+    // Get Clerk profile photo
+    const profilePhotoUrl = user.imageUrl
+
     const { error } = await supabase.from('founders').insert({
       clerk_user_id: user.id,
+      profile_photo_url: profilePhotoUrl,
       ...form,
     })
     if (error) {

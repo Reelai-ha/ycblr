@@ -39,12 +39,18 @@ export default function NetworkingBoardPage() {
   const [form, setForm] = useState({ message: '', location: LOCATIONS[1], time_slot: '3:00 PM' })
 
   async function load() {
-    const { data } = await supabase
-      .from('meetup_requests')
-      .select('*')
-      .order('created_at', { ascending: false })
-    setRequests(data || [])
-    setLoading(false)
+    try {
+      const { data, error } = await supabase
+        .from('meetup_requests')
+        .select('*')
+        .order('created_at', { ascending: false })
+      if (error) throw error
+      setRequests(data || [])
+    } catch {
+      setRequests([])
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => { load() }, [])
