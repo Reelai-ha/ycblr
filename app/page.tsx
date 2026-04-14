@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import { X, ExternalLink } from 'lucide-react'
+import { useUser } from '@clerk/nextjs'
 
 interface Founder { id: string; name: string; company: string; tagline: string; description: string; website: string; twitter: string; category: string; featured: boolean }
 interface Showcase { id: string; product_name: string; tagline: string; description: string; category: string; upvotes: number; website: string; logo_url: string; featured: boolean }
@@ -119,6 +120,8 @@ function ShowcaseModal({ item, onClose }: { item: Showcase; onClose: () => void 
 }
 
 export default function Home() {
+  const { isSignedIn, user } = useUser()
+  const [hasProfile, setHasProfile] = useState<boolean | null>(null)
   const [founders, setFounders] = useState<Founder[]>([])
   const [showcase, setShowcase] = useState<Showcase[]>([])
   const [featuredFounders, setFeaturedFounders] = useState<Founder[]>([])
@@ -126,6 +129,14 @@ export default function Home() {
   const [selectedFounder, setSelectedFounder] = useState<Founder | null>(null)
   const [selectedShowcase, setSelectedShowcase] = useState<Showcase | null>(null)
   const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    if (!isSignedIn || !user) { setHasProfile(false); return }
+    supabase.from('founders').select('id').eq('clerk_user_id', user.id).single()
+      .then(({ data }) => setHasProfile(!!data))
+  }, [isSignedIn, user])
+
+  const profileHref = !isSignedIn ? '/sign-up' : hasProfile === false ? '/onboarding' : '/card'
 
   useEffect(() => {
     async function load() {
@@ -177,8 +188,8 @@ export default function Home() {
               200+ founders. One room. Don&apos;t leave without knowing who&apos;s there — browse profiles, track who you met, and showcase what you&apos;re building.
             </p>
             <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3">
-              <Link href="/sign-up" className="bg-orange-500 hover:bg-orange-400 text-white font-semibold px-6 sm:px-7 py-3 rounded-xl transition-colors text-sm shadow-lg shadow-orange-200 text-center sm:text-left">
-                Add your profile →
+              <Link href={profileHref} className="bg-orange-500 hover:bg-orange-400 text-white font-semibold px-6 sm:px-7 py-3 rounded-xl transition-colors text-sm shadow-lg shadow-orange-200 text-center sm:text-left">
+                {isSignedIn && hasProfile ? 'View my card →' : 'Add your profile →'}
               </Link>
               <Link href="/founders" className="bg-white hover:bg-zinc-50 border border-zinc-200 text-zinc-700 font-semibold px-6 sm:px-7 py-3 rounded-xl transition-colors text-sm shadow-sm text-center">
                 Browse founders
@@ -304,7 +315,7 @@ export default function Home() {
               <div className="text-4xl mb-3">👋</div>
               <p className="text-zinc-500 font-semibold mb-1">No founders yet</p>
               <p className="text-zinc-400 text-sm mb-5">Be the first to add your profile to the directory.</p>
-              <Link href="/sign-up" className="bg-orange-500 hover:bg-orange-400 text-white font-semibold px-5 py-2.5 rounded-xl transition-colors text-sm">
+              <Link href={profileHref} className="bg-orange-500 hover:bg-orange-400 text-white font-semibold px-5 py-2.5 rounded-xl transition-colors text-sm">
                 Add your profile →
               </Link>
             </div>
