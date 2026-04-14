@@ -23,3 +23,17 @@ body {
 
 .animate-slide-up { animation: slide-up 0.3s ease forwards; }
 .animate-fade-in { animation: fade-in 0.2s ease forwards; }
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-33.33%); }
+}
+
+.animate-marquee {
+  display: inline-block;
+  animation: marquee 30s linear infinite;
+}
+
+.hover\:pause-animation:hover {
+  animation-play-state: paused;
+}

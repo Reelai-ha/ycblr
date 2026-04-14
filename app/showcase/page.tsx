@@ -72,9 +72,20 @@ export default function ShowcasePage() {
 
   useEffect(() => {
     async function load() {
-      const { data } = await supabase.from('showcases').select('*').order('upvotes', { ascending: false })
-      setItems(data || [])
-      setLoading(false)
+      try {
+        const { data, error } = await supabase.from('showcases').select('*').order('upvotes', { ascending: false })
+        if (error) {
+          console.error('Error fetching showcases:', error)
+          setItems([])
+        } else {
+          setItems(data || [])
+        }
+      } catch (err) {
+        console.error('Failed to load showcases:', err)
+        setItems([])
+      } finally {
+        setLoading(false)
+      }
     }
     load()
   }, [])
@@ -103,8 +114,8 @@ export default function ShowcasePage() {
         {CATEGORIES.map(cat => (
           <button key={cat} onClick={() => setFilter(cat)}
             className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${filter === cat
-                ? 'bg-orange-500 border-orange-500 text-white'
-                : 'bg-white border-zinc-200 text-zinc-500 hover:text-zinc-900 hover:border-zinc-300'
+              ? 'bg-orange-500 border-orange-500 text-white'
+              : 'bg-white border-zinc-200 text-zinc-500 hover:text-zinc-900 hover:border-zinc-300'
               }`}>
             {cat}
           </button>
@@ -129,7 +140,12 @@ export default function ShowcasePage() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {filtered.map(item => (
               <button key={item.id} onClick={() => setSelected(item)}
-                className="text-left group bg-white hover:bg-orange-50 border border-zinc-200 hover:border-orange-200 rounded-2xl p-6 transition-all shadow-sm hover:shadow-md cursor-pointer flex flex-col gap-3">
+                className={`text-left group bg-white border ${item.upvotes > 5 ? 'border-orange-300 ring-4 ring-orange-50' : 'border-zinc-200'} hover:bg-orange-50 hover:border-orange-200 rounded-2xl p-6 transition-all shadow-sm hover:shadow-md cursor-pointer flex flex-col gap-3 relative`}>
+                {item.upvotes > 5 && (
+                  <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm z-10">
+                    🔥 FEATURED
+                  </span>
+                )}
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <h3 className="font-bold text-zinc-900 text-lg">{item.product_name}</h3>
@@ -139,21 +155,40 @@ export default function ShowcasePage() {
                       </span>
                     )}
                   </div>
-                  <span className="text-zinc-400 text-xs flex items-center gap-1 shrink-0 mt-1">▲ {item.upvotes}</span>
+                  <div className="flex flex-col items-end gap-1">
+                    <span className="text-zinc-400 text-xs flex items-center gap-1 shrink-0 mt-1">▲ {item.upvotes}</span>
+                  </div>
                 </div>
                 {item.tagline && <p className="text-zinc-700 text-sm font-medium">{item.tagline}</p>}
                 {item.description && <p className="text-zinc-400 text-sm leading-relaxed line-clamp-2">{item.description}</p>}
                 <div className="flex items-center justify-between mt-auto pt-1">
-                  {item.website && (
-                    <span onClick={e => { e.stopPropagation(); window.open(item.website, '_blank') }}
-                      className="inline-flex items-center gap-1.5 text-xs text-orange-500 hover:text-orange-400 font-medium transition-colors cursor-pointer">
-                      <ExternalLink size={12} /> Visit site
+                  <div className="flex items-center gap-2">
+                    {item.website && (
+                      <span onClick={e => { e.stopPropagation(); window.open(item.website, '_blank') }}
+                        className="inline-flex items-center gap-1.5 text-xs text-orange-500 hover:text-orange-400 font-medium transition-colors cursor-pointer">
+                        <ExternalLink size={12} /> Visit site
+                      </span>
+                    )}
+                    <span onClick={e => {
+                      e.stopPropagation();
+                      const text = encodeURIComponent(`Check out ${item.product_name} on YC BLR Showcase! ${item.tagline}`);
+                      const url = encodeURIComponent(`https://ycblr.xyz/showcase`);
+                      window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+                    }} className="inline-flex items-center gap-1.5 text-xs text-zinc-400 hover:text-zinc-900 font-medium transition-colors cursor-pointer">
+                      𝕏 Share
                     </span>
-                  )}
+                  </div>
                   <span className="text-orange-500 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity ml-auto">View details →</span>
                 </div>
               </button>
             ))}
+          </div>
+          <div className="mt-12 p-8 bg-zinc-900 rounded-3xl text-center">
+            <h3 className="text-white font-black text-xl mb-2">Want to feature your product?</h3>
+            <p className="text-zinc-400 text-sm mb-6">Get premium placement on the home page and showcase tab for the entire event.</p>
+            <a href="https://twitter.com/kiaan_mittal" target="_blank" rel="noopener noreferrer" className="bg-orange-500 hover:bg-orange-400 text-white font-bold px-6 py-3 rounded-xl transition-all inline-block">
+              Sponsor Showcase →
+            </a>
           </div>
           {!loading && filtered.length === 0 && filter !== 'All' && (
             <div className="text-center py-20 text-zinc-400">No products in this category yet.</div>

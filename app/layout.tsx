@@ -3,11 +3,32 @@ import './globals.css'
 import { ClerkProvider } from '@clerk/nextjs'
 import NavBar from './components/NavBar'
 import TwitterCTA from './components/TwitterCTA'
+import Ticker from './components/Ticker'
 
 export const metadata: Metadata = {
   title: 'YC BLR \'26 — Founder Directory',
   description: 'Networking directory for YC Startup School Bangalore, April 18, 2026',
   manifest: '/manifest.json',
+  icons: {
+    icon: '/favicon.png',
+    apple: '/logo.png',
+  },
+  openGraph: {
+    title: "YC BLR '26 — Founder Directory",
+    description: "Meet 200+ founders at YC Startup School Bangalore. Browse products, find co-founders, and track connections.",
+    url: 'https://ycblr.xyz',
+    siteName: 'YC BLR Directory',
+    images: [{ url: '/og-image.png' }],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "YC BLR '26 — Founder Directory",
+    description: "Meet 200+ founders at YC Startup School Bangalore.",
+    creator: '@kiaan_mittal',
+    images: ['/og-image.png'],
+  },
   appleWebApp: { capable: true, statusBarStyle: 'default', title: 'YC BLR \'26' },
 }
 
@@ -20,6 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <ClerkProvider>
       <html lang="en">
         <body className="min-h-screen flex flex-col bg-white text-zinc-900">
+          <Ticker />
           <NavBar />
           <main className="flex-1">{children}</main>
           <TwitterCTA />

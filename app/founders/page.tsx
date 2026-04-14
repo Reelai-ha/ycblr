@@ -91,9 +91,20 @@ export default function FoundersPage() {
 
   useEffect(() => {
     async function load() {
-      const { data } = await supabase.from('founders').select('*').order('created_at', { ascending: false })
-      setFounders(data || [])
-      setLoading(false)
+      try {
+        const { data, error } = await supabase.from('founders').select('*').order('created_at', { ascending: false })
+        if (error) {
+          console.error('Error fetching founders:', error)
+          setFounders([])
+        } else {
+          setFounders(data || [])
+        }
+      } catch (err) {
+        console.error('Failed to load founders:', err)
+        setFounders([])
+      } finally {
+        setLoading(false)
+      }
     }
     load()
   }, [])

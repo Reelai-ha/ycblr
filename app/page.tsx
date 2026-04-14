@@ -124,13 +124,22 @@ export default function Home() {
 
   useEffect(() => {
     async function load() {
-      const [{ data: f }, { data: s }] = await Promise.all([
-        supabase.from('founders').select('*').order('created_at', { ascending: false }).limit(3),
-        supabase.from('showcases').select('*').order('upvotes', { ascending: false }).limit(3),
-      ])
-      setFounders(f || [])
-      setShowcase(s || [])
-      setLoading(false)
+      try {
+        const [{ data: f, error: fe }, { data: s, error: se }] = await Promise.all([
+          supabase.from('founders').select('*').order('created_at', { ascending: false }).limit(3),
+          supabase.from('showcases').select('*').order('upvotes', { ascending: false }).limit(3),
+        ])
+
+        if (fe) console.error('Error fetching founders:', fe)
+        if (se) console.error('Error fetching showcases:', se)
+
+        setFounders(f || [])
+        setShowcase(s || [])
+      } catch (err) {
+        console.error('Failed to load home data:', err)
+      } finally {
+        setLoading(false)
+      }
     }
     load()
   }, [])
@@ -144,6 +153,15 @@ export default function Home() {
 
         {/* Hero */}
         <div className="pt-20 pb-16">
+          <div className="flex items-center gap-4 mb-8">
+            <img src="/logo.png" alt="Logo" className="w-16 h-16 sm:w-20 sm:h-20 shadow-xl shadow-orange-100 rounded-2xl" />
+            <div className="h-10 w-[2px] bg-zinc-100 rounded-full sm:block hidden" />
+            <div className="sm:block hidden">
+              <p className="text-zinc-400 text-[10px] uppercase tracking-widest font-bold">Official Directory</p>
+              <p className="text-zinc-900 font-black text-sm">YC BLR &apos;26</p>
+            </div>
+          </div>
+
           <div className="inline-flex items-center gap-2 bg-orange-100 border border-orange-200 text-orange-600 text-xs px-3 py-1.5 rounded-full mb-6 font-medium">
             <span className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-pulse" />
             April 18, 2026 · Bangalore
@@ -292,6 +310,53 @@ export default function Home() {
               ))}
             </div>
           )}
+        </section>
+
+        {/* Viral Leaderboard */}
+        <section className="mb-20">
+          <div className="bg-gradient-to-br from-zinc-900 to-zinc-800 rounded-3xl p-8 sm:p-12 relative overflow-hidden">
+            {/* Background pattern */}
+            <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '24px 24px' }} />
+
+            <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+              <div className="max-w-md text-center md:text-left">
+                <div className="inline-block bg-orange-500 text-white text-[10px] font-bold px-2 py-1 rounded-md mb-4 uppercase tracking-tighter">Limited slots</div>
+                <h2 className="text-3xl sm:text-4xl font-black text-white mb-4 leading-tight">Sponsor YC BLR Directory</h2>
+                <p className="text-zinc-400 text-sm sm:text-base leading-relaxed mb-6">
+                  Get your brand in front of 200+ elite founders building the future. Sponsor the directory, showcased products, or the coffee zone.
+                </p>
+                <a href="https://twitter.com/kiaan_mittal" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-white hover:bg-zinc-100 text-zinc-900 font-bold px-7 py-3 rounded-xl transition-all shadow-xl">
+                  Become a Sponsor →
+                </a>
+              </div>
+
+              <div className="w-full max-w-sm bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
+                <h3 className="text-white font-bold mb-4 flex items-center justify-between">
+                  Trending Founders 🚀
+                  <span className="text-[10px] text-zinc-500 font-normal">Updated Live</span>
+                </h3>
+                <div className="space-y-4">
+                  {[
+                    { rank: '01', name: 'Ayush Singh', company: 'Build.io', votes: 42 },
+                    { rank: '02', name: 'Tanvi G', company: 'HealthQuest', votes: 38 },
+                    { rank: '03', name: 'Kiaan Mittal', company: 'Antigravity', votes: 31 },
+                  ].map(f => (
+                    <div key={f.rank} className="flex items-center justify-between group cursor-pointer hover:bg-white/5 p-2 rounded-xl transition-colors">
+                      <div className="flex items-center gap-3">
+                        <span className="text-orange-400 font-black text-sm">{f.rank}</span>
+                        <div>
+                          <div className="text-white text-sm font-bold">{f.name}</div>
+                          <div className="text-zinc-500 text-xs">{f.company}</div>
+                        </div>
+                      </div>
+                      <div className="text-zinc-400 text-xs font-medium">▲ {f.votes}</div>
+                    </div>
+                  ))}
+                </div>
+                <Link href="/founders" className="block text-center text-orange-400 text-xs font-bold mt-6 hover:text-orange-300 transition-colors">View All Founders →</Link>
+              </div>
+            </div>
+          </div>
         </section>
 
         {/* Feature cards */}

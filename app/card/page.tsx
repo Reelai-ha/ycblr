@@ -11,6 +11,7 @@ import { useSearchParams } from 'next/navigation'
 interface Founder {
   id: string; name: string; company: string; tagline: string
   website: string; twitter: string; category: string; description: string
+  clerk_user_id?: string
 }
 
 const CATEGORY_COLORS: Record<string, { bg: string; text: string }> = {
@@ -64,7 +65,7 @@ function CardContent() {
     load()
   }, [user, isLoaded, viewId])
 
-  const isOwnCard = !viewId || (user && founder && founder.id === viewId)
+  const isOwnCard = !viewId || (user && founder && founder.clerk_user_id === user.id)
 
   async function handleShare() {
     if (navigator.share) {
@@ -302,18 +303,35 @@ function CardContent() {
 
           {/* Public view: link to own card */}
           {viewId && !isOwnCard && (
-            <div className="flex gap-2.5 mb-3">
-              {founder.website && (
-                <a href={founder.website} target="_blank" rel="noopener noreferrer"
-                  className="flex-1 flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-400 text-white font-semibold py-3 rounded-2xl transition-colors text-sm shadow-lg shadow-orange-200">
-                  <ExternalLink size={15} /> Visit {founder.company}
-                </a>
-              )}
-              {founder.twitter && (
-                <a href={`https://twitter.com/${founder.twitter.replace('@', '')}`} target="_blank" rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 font-semibold py-3 px-4 rounded-2xl transition-colors text-sm">
-                  𝕏
-                </a>
+            <div className="flex flex-col gap-3 mb-3">
+              <div className="flex gap-2.5">
+                {founder.website && (
+                  <a href={founder.website} target="_blank" rel="noopener noreferrer"
+                    className="flex-1 flex items-center justify-center gap-2 bg-white hover:bg-zinc-50 border border-zinc-200 text-zinc-900 font-semibold py-3 rounded-2xl transition-colors text-sm shadow-sm">
+                    <ExternalLink size={15} /> Visit {founder.company}
+                  </a>
+                )}
+                {founder.twitter && (
+                  <a href={`https://twitter.com/${founder.twitter.replace('@', '')}`} target="_blank" rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 bg-zinc-900 hover:bg-zinc-800 text-white font-semibold py-3 px-4 rounded-2xl transition-colors text-sm">
+                    𝕏
+                  </a>
+                )}
+              </div>
+
+              {!user && (
+                <div className="flex flex-col gap-3">
+                  <Link
+                    href="/sign-up"
+                    className="flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-400 text-white font-bold py-4 rounded-2xl transition-all text-base shadow-lg shadow-orange-200 group"
+                  >
+                    ✨ Make your own card
+                    <span className="group-hover:translate-x-1 transition-transform">→</span>
+                  </Link>
+                  <p className="text-center text-xs text-zinc-400">
+                    Already have a profile? <Link href="/sign-in" className="text-orange-500 font-semibold hover:underline">Sign in</Link>
+                  </p>
+                </div>
               )}
             </div>
           )}
