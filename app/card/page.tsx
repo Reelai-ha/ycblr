@@ -221,7 +221,7 @@ function CardContent() {
 
         {/* Action buttons */}
         {isOwnCard && (
-          <div className="w-full flex gap-2.5 mb-4">
+          <div className="w-full flex flex-col sm:flex-row gap-2.5 mb-4">
             <button onClick={handleShare}
               className="flex-1 flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-400 text-white font-semibold py-3.5 rounded-2xl transition-colors text-sm shadow-lg shadow-orange-500/20">
               <Share2 size={15} />
@@ -232,6 +232,10 @@ function CardContent() {
               className="flex items-center justify-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-white font-semibold py-3.5 px-5 rounded-2xl transition-colors text-sm border border-zinc-700">
               𝕏 Tweet
             </a>
+            <Link href="/edit-profile"
+              className="flex items-center justify-center gap-2 bg-white hover:bg-zinc-50 border border-zinc-200 text-zinc-700 font-semibold py-3.5 px-5 rounded-2xl transition-colors text-sm">
+              ✏️ Edit
+            </Link>
           </div>
         )}
 

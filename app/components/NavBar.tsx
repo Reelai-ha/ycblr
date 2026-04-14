@@ -41,7 +41,10 @@ export default function NavBar() {
           <div className="w-px h-4 bg-zinc-200 mx-1" />
           <div className="flex items-center gap-1 pr-1">
             {isSignedIn ? (
-              <UserButton />
+              <>
+                <Link href="/edit-profile" className="px-3 py-1.5 text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 rounded-full transition-colors text-xs font-semibold">Edit</Link>
+                <UserButton />
+              </>
             ) : (
               <>
                 <Link href="/sign-in" className="px-3 py-1.5 text-sm text-zinc-500 hover:text-zinc-900 rounded-full transition-colors">Sign in</Link>
@@ -72,6 +75,7 @@ export default function NavBar() {
             {isSignedIn ? (
               <>
                 <Link href="/card" className="text-sm text-orange-500 hover:text-orange-400 hidden sm:block px-3 py-1.5 font-semibold transition-colors">My Card</Link>
+                <Link href="/edit-profile" className="text-sm text-zinc-500 hover:text-zinc-900 hidden sm:block px-3 py-1.5 hover:bg-zinc-100 rounded-lg transition-colors">Edit</Link>
                 <Link href="/connections" className="text-sm text-zinc-500 hover:text-zinc-900 hidden sm:block px-3 py-1.5 hover:bg-zinc-100 rounded-lg transition-colors">Connections</Link>
                 <UserButton />
               </>

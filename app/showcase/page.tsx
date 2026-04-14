@@ -100,10 +100,6 @@ export default function ShowcasePage() {
           <p className="text-zinc-400 text-xs sm:text-sm mt-1">Products being built by the community</p>
         </div>
         <div className="flex items-center gap-2.5 self-start flex-wrap">
-          <Link href="/get-featured?step=type"
-            className="flex items-center gap-1.5 bg-orange-500 hover:bg-orange-400 text-white font-semibold px-4 py-2.5 rounded-xl text-sm transition-colors shadow-lg shadow-orange-100">
-            ⭐ Get Featured
-          </Link>
           {isSignedIn ? (
             <Link href="/showcase/new" className="bg-orange-500 hover:bg-orange-400 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-colors shadow-lg shadow-orange-100">
               + Add Your Product
@@ -113,6 +109,10 @@ export default function ShowcasePage() {
               + Add Your Product
             </Link>
           )}
+          <Link href="/get-featured?step=type"
+            className="flex items-center gap-1.5 border-2 border-orange-300 bg-white hover:bg-orange-50 text-orange-600 font-semibold px-4 py-2.5 rounded-xl text-sm transition-colors">
+            ⭐ Get Featured ($3)
+          </Link>
         </div>
       </div>
 
