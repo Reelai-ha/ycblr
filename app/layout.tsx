@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import { ClerkProvider } from '@clerk/nextjs'
+import { Suspense } from 'react'
 import NavBar from './components/NavBar'
 import TwitterCTA from './components/TwitterCTA'
 

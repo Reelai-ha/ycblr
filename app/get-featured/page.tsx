@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useUser } from '@clerk/nextjs'
 import { supabase } from '@/lib/supabase'
@@ -11,7 +11,7 @@ const CATEGORIES = ['SaaS', 'AI/ML', 'Dev Tools', 'Fintech', 'Health', 'Consumer
 const FEATURED_FOUNDER_URL = 'https://checkout.dodopayments.com/buy/pdt_0Nch2cGLwwjUu9scUmAgt?quantity=1&redirect_url=https://ycblr.xyz/get-featured?step=thank-you'
 const FEATURED_PRODUCT_URL = 'https://checkout.dodopayments.com/buy/pdt_0Nch2cGLwwjUu9scUmAgt?quantity=1&redirect_url=https://ycblr.xyz/get-featured?step=thank-you'
 
-export default function GetFeaturedPage() {
+function GetFeaturedContent() {
   const { user, isSignedIn } = useUser()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -392,4 +392,12 @@ export default function GetFeaturedPage() {
   }
 
   return null
+}
+
+export default function GetFeaturedPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="w-8 h-8 border-2 border-orange-500 border-t-transparent rounded-full animate-spin" /></div>}>
+      <GetFeaturedContent />
+    </Suspense>
+  )
 }

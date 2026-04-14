@@ -42,7 +42,7 @@ export default function EditProfilePage() {
     }
 
     async function load() {
-      const { data } = await supabase.from('founders').select('*').eq('clerk_user_id', user.id).single()
+      const { data } = await supabase.from('founders').select('*').eq('clerk_user_id', user!.id).single()
       if (data) {
         setForm(data)
       } else {
