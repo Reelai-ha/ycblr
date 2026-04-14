@@ -99,11 +99,11 @@ export default function ShowcasePage() {
           <h1 className="text-2xl sm:text-3xl font-black text-zinc-900">Showcase</h1>
           <p className="text-zinc-400 text-xs sm:text-sm mt-1">Products being built by the community</p>
         </div>
-        <div className="flex items-center gap-3 self-start flex-wrap">
-          <a href="https://checkout.dodopayments.com/buy/pdt_0Nch2cGLwwjUu9scUmAgt?quantity=1&redirect_url=https://ycblr.xyz" target="_blank" rel="noopener noreferrer"
-            className="flex items-center gap-1.5 border border-orange-300 text-orange-600 hover:bg-orange-50 font-semibold px-4 py-2.5 rounded-xl text-sm transition-colors">
+        <div className="flex items-center gap-2.5 self-start flex-wrap">
+          <Link href="/get-featured?step=type"
+            className="flex items-center gap-1.5 bg-orange-500 hover:bg-orange-400 text-white font-semibold px-4 py-2.5 rounded-xl text-sm transition-colors shadow-lg shadow-orange-100">
             ⭐ Get Featured
-          </a>
+          </Link>
           {isSignedIn ? (
             <Link href="/showcase/new" className="bg-orange-500 hover:bg-orange-400 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-colors shadow-lg shadow-orange-100">
               + Add Your Product

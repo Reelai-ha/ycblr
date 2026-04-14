@@ -390,6 +390,21 @@ export default function Home() {
           )}
         </section>
 
+        {/* Promotion banner */}
+        <section className="mb-16 sm:mb-20">
+          <div className="bg-blue-50 border-2 border-blue-200 rounded-3xl p-6 sm:p-10 text-center">
+            <div className="inline-block bg-blue-500 text-white text-[10px] font-black px-2.5 py-1 rounded-md mb-4 uppercase tracking-tighter">Free</div>
+            <h2 className="text-2xl sm:text-3xl font-black text-zinc-900 mb-3">Made by founders, for founders 💙</h2>
+            <p className="text-zinc-600 text-sm sm:text-base leading-relaxed mb-6 max-w-2xl mx-auto">
+              YC BLR Directory is a free tool to help 200+ founders connect at YC Startup School Bangalore. Built with ❤️ by @kiaan_mittal
+            </p>
+            <a href="https://twitter.com/intent/tweet?text=YC%20BLR%20%2726%20Directory%20is%20a%20free%20tool%20to%20meet%20200%2B%20founders%20at%20YC%20Startup%20School%20Bangalore%20%F0%9F%87%AE%F0%9F%87%B3%0A%0AFeature%20your%20profile%2C%20track%20connections%2C%20digital%20cards%2C%20and%20more.%0A%0Ahttps%3A%2F%2Fycblr.xyz%0A%0AThanks%20%40kiaan_mittal%20%F0%9F%99%8F&hashtags=YCStartupSchool,Bangalore" target="_blank" rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-xl transition-colors text-sm">
+              Share on 𝕏 →
+            </a>
+          </div>
+        </section>
+
         {/* Viral Leaderboard */}
         <section className="mb-20">
           <div className="bg-gradient-to-br from-zinc-900 to-zinc-800 rounded-3xl p-8 sm:p-12 relative overflow-hidden">
@@ -399,16 +414,16 @@ export default function Home() {
             <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
               <div className="max-w-md text-center md:text-left">
                 <div className="inline-block bg-orange-500 text-white text-[10px] font-bold px-2 py-1 rounded-md mb-4 uppercase tracking-tighter">Limited slots</div>
-                <h2 className="text-3xl sm:text-4xl font-black text-white mb-4 leading-tight">Sponsor YC BLR Directory</h2>
+                <h2 className="text-3xl sm:text-4xl font-black text-white mb-4 leading-tight">Get Featured at the Event</h2>
                 <p className="text-zinc-400 text-sm sm:text-base leading-relaxed mb-6">
-                  Get your brand in front of 200+ elite founders building the future. Sponsor the directory, showcased products, or the coffee zone.
+                  Stand out from 200+ founders. Get featured in the directory or showcase and be seen by everyone at YC Startup School Bangalore.
                 </p>
-                <div className="flex flex-wrap gap-3">
-                  <a href={SPONSOR_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-white hover:bg-zinc-100 text-zinc-900 font-bold px-7 py-3 rounded-xl transition-all shadow-xl">
-                    Become a Sponsor →
-                  </a>
-                  <a href={FEATURED_FOUNDER_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-400 text-white font-bold px-7 py-3 rounded-xl transition-all shadow-xl">
-                    ⭐ Get Featured
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Link href="/get-featured?step=type" className="inline-flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-400 text-white font-bold px-7 py-3 rounded-xl transition-all shadow-xl">
+                    ⭐ Feature Yourself
+                  </Link>
+                  <a href={SPONSOR_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 bg-white hover:bg-zinc-100 text-zinc-900 font-bold px-7 py-3 rounded-xl transition-all shadow-xl">
+                    Sponsor →
                   </a>
                 </div>
               </div>
