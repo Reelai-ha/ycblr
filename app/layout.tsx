@@ -7,27 +7,30 @@ import NavBar from './components/NavBar'
 import TwitterCTA from './components/TwitterCTA'
 import DataFastInit from './components/DataFastInit'
 
-export const metadata: Metadata = {
-  title: 'YC BLR \'26 — Founder Directory',
-  description: 'Networking directory for YC Startup School Bangalore, April 18, 2026',
-  manifest: '/manifest.json',
+export const metadata = {
+  title: "YC BLR Directory",
+  description: "Live founder directory for YC Bangalore",
   openGraph: {
-    title: "YC BLR '26 — Founder Directory",
-    description: "Meet 200+ founders at YC Startup School Bangalore. Browse products, find co-founders, and track connections.",
-    url: 'https://ycblr.xyz',
-    siteName: 'YC BLR Directory',
-    images: [{ url: 'https://ycblr.xyz/og-image.png' }],
-    locale: 'en_US',
-    type: 'website',
+    title: "YC BLR Directory",
+    description: "50+ founders already inside. Don't show up blind.",
+    url: "https://ycblr.xyz",
+    siteName: "YC BLR",
+    images: [
+      {
+        url: "https://ycblr.xyz/og.png", // IMPORTANT
+        width: 1200,
+        height: 630,
+      },
+    ],
+    locale: "en_US",
+    type: "website",
   },
   twitter: {
-    card: 'summary_large_image',
-    title: "YC BLR '26 — Founder Directory",
-    description: "Meet 200+ founders at YC Startup School Bangalore.",
-    creator: '@kiaan_mittal',
-    images: ['https://ycblr.xyz/og-image.png'],
+    card: "summary_large_image",
+    title: "YC BLR Directory",
+    description: "50+ founders already inside.",
+    images: ["https://ycblr.xyz/og.png"],
   },
-  appleWebApp: { capable: true, statusBarStyle: 'default', title: 'YC BLR \'26' },
 }
 
 export const viewport: Viewport = {
@@ -38,6 +41,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <ClerkProvider>
       <html lang="en">
+        <head>
+          <meta property="og:image" content="https://ycblr.xyz/og.png" />
+          <meta name="twitter:image" content="https://ycblr.xyz/og.png" />
+          <meta name="twitter:card" content="summary_large_image" />
+        </head>
         <body className="min-h-screen flex flex-col bg-white text-zinc-900">
           <Analytics />
           <DataFastInit />
