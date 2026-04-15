@@ -35,11 +35,11 @@ export default function OnboardingPage() {
     // Get Clerk profile photo
     const profilePhotoUrl = user.imageUrl
 
-    const { error } = await supabase.from('founders').insert({
+    const { error } = await supabase.from('founders').upsert({
       clerk_user_id: user.id,
       profile_photo_url: profilePhotoUrl,
       ...form,
-    })
+    }, { onConflict: 'clerk_user_id' })
     if (error) {
       setError(error.message)
       setLoading(false)

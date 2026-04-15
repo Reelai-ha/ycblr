@@ -109,11 +109,11 @@ function GetFeaturedContent() {
       const profilePhotoUrl = user.imageUrl
 
       if (type === 'founder') {
-        const { error: err } = await supabase.from('founders').insert({
+        const { error: err } = await supabase.from('founders').upsert({
           clerk_user_id: user.id,
           profile_photo_url: profilePhotoUrl,
           ...form,
-        })
+        }, { onConflict: 'clerk_user_id' })
         if (err) {
           setError(err.message)
           setLoading(false)
